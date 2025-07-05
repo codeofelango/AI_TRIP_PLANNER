@@ -24,6 +24,7 @@ class QueryRequest(BaseModel):
 @app.post("/query")
 async def query_travel_agent(query:QueryRequest):
     try:
+        print("Comes at query place")
         print(query)
         graph = GraphBuilder(model_provider="groq")
         react_app=graph()
@@ -43,7 +44,8 @@ async def query_travel_agent(query:QueryRequest):
             final_output = output["messages"][-1].content  # Last AI response
         else:
             final_output = str(output)
-        
+        save_document(final_output, directory="./output")
+
         return {"answer": final_output}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})

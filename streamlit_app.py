@@ -25,7 +25,7 @@ st.header("How can I help you in planning a trip? Let me know where do you want 
 
 # Chat input box at bottom
 with st.form(key="query_form", clear_on_submit=True):
-    user_input = st.text_input("User Input", placeholder="e.g. Plan a trip to Goa for 5 days")
+    user_input = st.text_input("User Input", placeholder="e.g. Plan a trip to Saudi Arabia for 5 days")
     submit_button = st.form_submit_button("Send")
 
 if submit_button and user_input.strip():
@@ -34,8 +34,11 @@ if submit_button and user_input.strip():
         # Show thinking spinner while backend processes
         with st.spinner("Bot is thinking..."):
             payload = {"question": user_input}
+            print(payload)
+            print('wewe dsds')
             response = requests.post(f"{BASE_URL}/query", json=payload)
-
+            print('Response from backend:')
+            print(response.status_code, response.text, file=sys.stderr)
         if response.status_code == 200:
             answer = response.json().get("answer", "No answer returned.")
             markdown_content = f"""# 🌍 AI Travel Plan
@@ -54,6 +57,5 @@ if submit_button and user_input.strip():
             st.markdown(markdown_content)
         else:
             st.error(" Bot failed to respond: " + response.text)
-
     except Exception as e:
-        raise f"The response failed due to {e}"
+        st.error(f"The response failed due to {e}")
